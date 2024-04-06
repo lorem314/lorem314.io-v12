@@ -8,6 +8,11 @@ const GlobalContextProvider = ({ children }) => {
   const [isLayoutSidebarAlwaysCollapsed, setIsLayoutSidebarAlwaysCollapsed] =
     useLocalStorage("global-context_is-layout-sidebar-always-collapsed", false)
 
+  const [layoutSidebarWidth, setLayoutSidebarWidth] = useLocalStorage(
+    "global-context_layout-sidebar-width",
+    320
+  )
+
   const [isRightDrawersAlwaysCollapsed, setIsRightDrawersAlwaysCollapsed] =
     useLocalStorage("global-context_is-right-drawers-always-collapsed", {
       "/blogs": false,
@@ -22,6 +27,7 @@ const GlobalContextProvider = ({ children }) => {
     )
   }
 
+  // console.log("[GlobalContext] layoutSidebarWidth", layoutSidebarWidth)
   return (
     <GlobalContext.Provider
       value={{
@@ -30,6 +36,8 @@ const GlobalContextProvider = ({ children }) => {
         toggleIsLayoutSidebarAlwaysCollapsed,
         isRightDrawersAlwaysCollapsed,
         setIsRightDrawersAlwaysCollapsed,
+        layoutSidebarWidth,
+        setLayoutSidebarWidth,
       }}
     >
       {children}

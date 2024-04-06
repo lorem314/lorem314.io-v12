@@ -4,7 +4,9 @@ const useLocalStorage = (key, initialValue) => {
   const [storedValue, setStoredValue] = useState(() => {
     const initialValueToUse =
       initialValue instanceof Function ? initialValue() : initialValue
+
     if (typeof window === "undefined") return initialValueToUse
+
     try {
       const item = window.localStorage.getItem(key)
       if (!item) {

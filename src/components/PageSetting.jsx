@@ -142,8 +142,8 @@ const PageSetting = () => {
             <input
               type="checkbox"
               id="always-collapse-right-drawer_template-book-chapter"
-              checked={isRightDrawersAlwaysCollapsed["/books/.*/.*"]}
-              onChange={handleChangeSubCheckbox("/books/.*/.*")}
+              checked={isRightDrawersAlwaysCollapsed["/books/.*?/.*"]}
+              onChange={handleChangeSubCheckbox("/books/.*?/.*")}
             />
             总是折叠<strong>书籍章节</strong>页面右侧抽屉
           </label>

@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React, { useCallback, useMemo, useState } from "react"
 import styled from "styled-components"
 
 import { AiFillTags } from "@react-icons/all-files/ai/AiFillTags"
@@ -11,6 +11,7 @@ import Footer from "./Footer"
 import Drawer from "../ui/Drawer"
 import useDrawer from "../hooks/useDrawer"
 import DrawerHead from "../styled/DrawerHead"
+import SplitView from "../ui/SplitView"
 
 import { useGlobalContext } from "../GlobalContext"
 import GlobalStyle, { bp, size } from "../styled/GlobalStyle"
@@ -19,44 +20,49 @@ const Wrapper = styled.div`
   width: 100%;
   height: 100%;
 
-  > .sidebar-container {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    bottom: 0;
-    /* width: var(--size-layout-sidebar-width); */
-    width: ${size.layoutSidebarWidth}px;
-  }
-
-  > main {
+  main {
     position: absolute;
     top: 50px;
     right: 0;
     bottom: 0;
-    left: ${({ $isLayoutSidebarAlwaysCollapsed, $isLayoutSidebarCollapsed }) =>
-      $isLayoutSidebarAlwaysCollapsed || $isLayoutSidebarCollapsed
-        ? "0"
-        : size.layoutSidebarWidth}px;
+    left: 0;
+    color: var(--content-color-1);
+    background-color: var(--bg-0);
+    overflow: auto;
+    scroll-behavior: smooth;
+  }
 
-    > .page-container {
+  > .split-view {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    > .left > .sidebar-container {
       position: absolute;
       top: 0;
       left: 0;
       bottom: 0;
-      right: 0;
-      overflow: auto;
-      scroll-behavior: smooth;
-      padding: 0 10px;
+      width: 100%;
+    }
 
-      color: var(--content-color-1);
-      background-color: var(--bg-0);
+    > .right > main {
+      top: 0;
     }
   }
 `
 
 const Layout = ({ children, location }) => {
-  const { isLayoutSidebarAlwaysCollapsed, isRightDrawersAlwaysCollapsed } =
-    useGlobalContext()
+  const {
+    isLayoutSidebarAlwaysCollapsed,
+    isRightDrawersAlwaysCollapsed,
+    layoutSidebarWidth,
+    setLayoutSidebarWidth,
+  } = useGlobalContext()
+
+  // console.log("layoutSidebarWidth", layoutSidebarWidth)
+  // const [layoutSidebarWidth, setLayoutSidebarWidth] = useState(320)
 
   const {
     isCollapsed: isLayoutSidebarCollapsed,
@@ -88,10 +94,16 @@ const Layout = ({ children, location }) => {
 
   const cachedSidebar = useMemo(() => <Sidebar />, [])
 
-  return isLayoutSidebarCollapsed === undefined ? null : (
+  const cachedHandleFinished = useCallback((width) => {
+    // console.log("cachedHandleFinished width", width)
+    setLayoutSidebarWidth(width)
+  }, [])
+
+  return typeof window === "undefined" ? null : (
     <Wrapper
       $isLayoutSidebarAlwaysCollapsed={isLayoutSidebarAlwaysCollapsed}
       $isLayoutSidebarCollapsed={isLayoutSidebarCollapsed}
+      $layoutSidebarWidth={layoutSidebarWidth}
     >
       <GlobalStyle />
 
@@ -106,32 +118,56 @@ const Layout = ({ children, location }) => {
       />
 
       {isLayoutSidebarAlwaysCollapsed || isLayoutSidebarCollapsed ? (
-        <Drawer
-          isOpen={isLayoutSidebarOpen}
-          position="left"
-          onClose={handleLayoutSidebarClose}
-        >
-          <DrawerHead position="left">
-            <Logo />
-          </DrawerHead>
-          {cachedSidebar}
-        </Drawer>
+        <>
+          <Drawer
+            size={layoutSidebarWidth}
+            isOpen={isLayoutSidebarOpen}
+            position="left"
+            onClose={handleLayoutSidebarClose}
+          >
+            <DrawerHead position="left">
+              <Logo />
+            </DrawerHead>
+            {cachedSidebar}
+          </Drawer>
+          <main>
+            {/* <div id="page-container" className="page-container"> */}
+            {React.cloneElement(children, {
+              isRightDrawerAlwaysCollapsed,
+              isRightDrawerCollapsed,
+              isRightDrawerOpen,
+              openRightDrawer,
+              closeRightDrawer,
+            })}
+            <Footer />
+            {/* </div> */}
+          </main>
+        </>
       ) : (
-        <div className="sidebar-container">{cachedSidebar}</div>
+        <SplitView
+          adjust="left"
+          initialWidth={layoutSidebarWidth}
+          maxWidth={500}
+          minWidth={240}
+          onFinished={cachedHandleFinished}
+        >
+          <div className="sidebar-container">{cachedSidebar}</div>
+          <main>
+            <div id="page-container" className="page-container">
+              {React.cloneElement(children, {
+                isRightDrawerAlwaysCollapsed,
+                isRightDrawerCollapsed,
+                isRightDrawerOpen,
+                openRightDrawer,
+                closeRightDrawer,
+              })}
+              <Footer />
+            </div>
+          </main>
+        </SplitView>
       )}
 
-      <main>
-        <div id="page-container" className="page-container">
-          {React.cloneElement(children, {
-            isRightDrawerAlwaysCollapsed,
-            isRightDrawerCollapsed,
-            isRightDrawerOpen,
-            openRightDrawer,
-            closeRightDrawer,
-          })}
-          <Footer />
-        </div>
-      </main>
+      {/*  */}
     </Wrapper>
   )
 }
