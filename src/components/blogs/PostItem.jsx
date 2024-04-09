@@ -32,9 +32,11 @@ const PostItem = ({ post }) => {
             <Link to={post.fields.slug}>{post.frontmatter.title}</Link>
           </h4>
           <Tags tags={post.frontmatter.tags} />
-          <p className="post-created-at">
-            发布于 {formateDate(post.frontmatter.createdAt)}
-          </p>
+          <div className="post-created-at">
+            <span>发布于 {formateDate(post.frontmatter.createdAt)}</span>
+            <span> · </span>
+            <span>约 {post.fields.statistic.totalWords} 字</span>
+          </div>
         </header>
       </article>
     </Wrapper>

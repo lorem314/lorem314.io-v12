@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from "react"
 import styled from "styled-components"
 
 import { AiFillTags } from "@react-icons/all-files/ai/AiFillTags"
+import { VscListTree } from "@react-icons/all-files/vsc/VscListTree"
 
 import Header from "./Header"
 import Sidebar from "./Sidebar"
@@ -21,6 +22,7 @@ const Wrapper = styled.div`
   height: 100%;
 
   main {
+    padding: 0 10px;
     position: absolute;
     top: 50px;
     right: 0;
@@ -48,6 +50,7 @@ const Wrapper = styled.div`
     }
 
     > .right > main {
+      padding: 0 10px;
       top: 0;
     }
   }
@@ -176,10 +179,16 @@ export default Layout
 
 const getRightDrawerBreakPointAndIcon = (location) => {
   if (!location) return [0, null]
+
   const pathname = location.pathname
-  if (pathname.includes("blogs")) {
+  console.log("pathanme ", pathname)
+
+  if (new RegExp("^/blogs$").test(pathname)) {
     // return { breakPoint: bp.collapsePageBlogRightDrawer, Icon: FaTags }
     return [bp.collapsePageBlogsRightDrawer, AiFillTags]
+  } else if (new RegExp("^/blogs/.*?").test(pathname)) {
+    console.log("/blogs/[title]")
+    return [bp.collapseArticleRightDrawer, VscListTree]
   } else {
     return [0, null]
   }

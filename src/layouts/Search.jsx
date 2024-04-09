@@ -1,7 +1,8 @@
 import React from "react"
 import styled from "styled-components"
 
-import { FaSearch } from "@react-icons/all-files/fa/FaSearch"
+// import { FaSearch } from "@react-icons/all-files/fa/FaSearch"
+import { IoMdSearch } from "@react-icons/all-files/io/IoMdSearch"
 
 const Wrapper = styled.div`
   flex-grow: 1;
@@ -40,13 +41,29 @@ const Wrapper = styled.div`
       }
     }
   }
+
+  @media screen and (max-width: 576px) {
+    justify-content: flex-end;
+
+    > .global-search-button {
+      --svg-icon-size: 1.5rem;
+
+      flex: 0 0 24px;
+      padding: 0.25rem;
+      border-radius: 0.25rem;
+
+      > .search-text {
+        display: none;
+      }
+    }
+  }
 `
 
 const Search = () => {
   return (
     <Wrapper>
       <button className="global-search-button">
-        <FaSearch />
+        <IoMdSearch />
         <div className="search-text">
           <span className="search-label">搜索</span>
           <span className="kbds">

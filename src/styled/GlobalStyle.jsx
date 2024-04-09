@@ -208,6 +208,7 @@ const GlobalStyle = styled.createGlobalStyle`
     font-size: 1em;
     display: flex;
     align-items: center;
+    cursor: pointer;
   }
   select {
     cursor: pointer;

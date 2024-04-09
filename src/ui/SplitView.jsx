@@ -96,7 +96,7 @@ const SplitView = ({
 
   const style = { flexBasis: `${width}px` }
 
-  console.log("width", width)
+  // console.log("width", width)
 
   return (
     <Wrapper ref={refRoot} $adjust={adjust}>

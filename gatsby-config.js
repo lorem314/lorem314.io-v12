@@ -1,6 +1,9 @@
 /**
  * @type {import('gatsby').GatsbyConfig}
  */
+
+const { remarkSandpack } = require("remark-sandpack")
+
 module.exports = {
   trailingSlash: "never",
   siteMetadata: {
@@ -22,7 +25,17 @@ module.exports = {
         icon: "src/images/icon.png",
       },
     },
-    "gatsby-plugin-mdx",
+    {
+      resolve: "gatsby-plugin-mdx",
+      options: {
+        extensions: [`.mdx`, `.md`],
+        gatsbyRemarkPlugins: [],
+        mdxOptions: {
+          remarkPlugins: [remarkSandpack],
+          rehypePlugins: [],
+        },
+      },
+    },
     "gatsby-plugin-sharp",
     "gatsby-transformer-sharp",
     {

@@ -48,3 +48,12 @@ const GlobalContextProvider = ({ children }) => {
 export default GlobalContextProvider
 
 export const useGlobalContext = () => useContext(GlobalContext)
+
+/**
+ *  有 右侧抽屉 的页面
+ *  pages
+ *    blogs         /blogs
+ *  templates
+ *    blog-post     /blogs/[title]#[hash]
+ *    book-chapter  /books/[title]/[chapter]#[hash]
+ */

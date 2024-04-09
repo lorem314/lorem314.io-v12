@@ -31,6 +31,9 @@ export const query = graphql`
         }
         fields {
           slug
+          statistic {
+            totalWords
+          }
         }
       }
     }

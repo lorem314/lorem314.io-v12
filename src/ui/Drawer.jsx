@@ -20,7 +20,7 @@ const Drawer = ({
   ) : null
 }
 
-export default Drawer
+export default React.memo(Drawer)
 
 const Backdrop = styled.div`
   position: absolute;
