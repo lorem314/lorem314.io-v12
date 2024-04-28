@@ -5,7 +5,6 @@ import useTheme from "../hooks/useTheme"
 import { useGlobalContext } from "../GlobalContext"
 
 import { showNotification } from "../ui/Notification"
-import ExternalLink from "../ui/ExternalLink"
 
 const Wrapper = styled.section`
   max-width: 32rem;
@@ -177,20 +176,6 @@ const PageSetting = () => {
       >
         发送通知
       </button>
-
-      <p>
-        Read <ExternalLink>this</ExternalLink> article.
-      </p>
-      <p>
-        详情阅读 <ExternalLink>这篇</ExternalLink> 文章。详情阅读{" "}
-        <ExternalLink>这篇</ExternalLink> 文章。详情阅读{" "}
-        <ExternalLink>这篇</ExternalLink> 文章。详情阅读{" "}
-        <ExternalLink>这篇</ExternalLink> 文章。详情阅读{" "}
-        <ExternalLink>这篇</ExternalLink> 文章。详情阅读{" "}
-        <ExternalLink>这篇</ExternalLink> 文章。详情阅读{" "}
-        <ExternalLink>这篇</ExternalLink> 文章。详情阅读{" "}
-        <ExternalLink>这篇</ExternalLink> 文章。
-      </p>
     </Wrapper>
   )
 }

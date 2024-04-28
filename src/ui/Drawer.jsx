@@ -42,11 +42,11 @@ const Backdrop = styled.div`
 `
 
 const Portal = ({ position, size, onClose, children }) => {
+  const ref = useRef(null)
   const [styles, setStyles] = useState({
     opacity: 0,
     transform: getTransformStartProp(position),
   })
-  const ref = useRef(null)
 
   useEffect(() => {
     const focusableElements = getFocusableElementsOf(ref.current)

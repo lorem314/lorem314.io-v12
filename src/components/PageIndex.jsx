@@ -2,6 +2,7 @@ import React from "react"
 import styled from "styled-components"
 
 import SplitView from "../ui/SplitView"
+import NumberInput from "../ui/NumberInput"
 
 const Wrapper = styled.section`
   max-width: 32rem;
@@ -21,6 +22,24 @@ const PageIndex = () => {
   return (
     <Wrapper>
       <h2 className="greeting">欢迎来到我的博客</h2>
+
+      <NumberInput />
+
+      <details>
+        <summary>标题</summary>
+        <div>
+          <p>
+            岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏
+            岑氏岑氏 岑氏岑氏岑氏 岑氏 岑氏 岑氏 岑氏
+            岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏 岑氏岑氏 岑氏岑氏 岑氏 岑氏
+            岑氏 岑氏 岑氏岑氏岑氏 岑氏 岑氏岑氏岑氏 岑氏岑氏 岑氏 岑氏 岑氏
+            岑氏 岑氏岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏
+            岑氏岑氏 岑氏 岑氏岑氏岑氏岑氏岑氏岑氏 岑氏 岑氏 岑氏 岑氏岑氏 岑氏
+            岑氏 岑氏 岑氏岑氏 岑氏 岑氏 岑氏 岑氏 岑氏
+          </p>
+        </div>
+      </details>
+
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia
         laudantium aliquid, esse voluptatum cumque quibusdam facilis voluptates

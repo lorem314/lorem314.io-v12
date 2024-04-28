@@ -6,7 +6,7 @@ import PageIndex from "../components/PageIndex"
 const Index = ({ location }) => {
   // console.log("[index.jsx] location ", location)
   return (
-    <Layout>
+    <Layout location={location}>
       <PageIndex />
     </Layout>
   )

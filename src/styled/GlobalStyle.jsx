@@ -209,6 +209,7 @@ const GlobalStyle = styled.createGlobalStyle`
     display: flex;
     align-items: center;
     cursor: pointer;
+    user-select: none;
   }
   select {
     cursor: pointer;

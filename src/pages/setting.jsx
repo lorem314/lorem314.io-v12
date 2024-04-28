@@ -3,9 +3,9 @@ import React from "react"
 import Layout from "../layouts/Layout"
 import PageSetting from "../components/PageSetting"
 
-const Setting = () => {
+const Setting = ({ location }) => {
   return (
-    <Layout>
+    <Layout location={location}>
       <PageSetting />
     </Layout>
   )

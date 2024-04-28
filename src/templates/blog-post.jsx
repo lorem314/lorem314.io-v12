@@ -33,9 +33,7 @@ export const query = graphql`
       fields {
         slug
         type
-        statistic {
-          totalWords
-        }
+        tableOfContents
       }
       body
       tableOfContents

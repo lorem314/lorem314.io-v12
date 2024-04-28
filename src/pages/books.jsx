@@ -3,9 +3,9 @@ import React from "react"
 import Layout from "../layouts/Layout"
 import PageBooks from "../components/PageBooks"
 
-const Books = () => {
+const Books = ({ location }) => {
   return (
-    <Layout>
+    <Layout location={location}>
       <PageBooks />
     </Layout>
   )

@@ -6,11 +6,11 @@ const Wrapper = styled.div.attrs({ className: "split-view" })`
 
   > .left {
     flex-grow: ${({ $adjust }) => ($adjust === "left" ? "0" : "1")};
+    flex-shrink: 1;
     position: relative;
   }
 
   > .spliter {
-    /* z-index: 10; */
     flex: 0 0 4px;
     cursor: ew-resize;
     background-color: rgba(0, 0, 0, 0.25);
@@ -22,6 +22,7 @@ const Wrapper = styled.div.attrs({ className: "split-view" })`
 
   > .right {
     flex-grow: ${({ $adjust }) => ($adjust === "right" ? "0" : "1")};
+    flex-shrink: 1;
     position: relative;
   }
 `
@@ -95,8 +96,7 @@ const SplitView = ({
   }, [adjust, minWidth, maxWidth])
 
   const style = { flexBasis: `${width}px` }
-
-  // console.log("width", width)
+  console.log("width", width)
 
   return (
     <Wrapper ref={refRoot} $adjust={adjust}>

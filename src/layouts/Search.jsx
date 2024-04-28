@@ -1,6 +1,8 @@
-import React from "react"
+import React, { useState } from "react"
 import styled from "styled-components"
 
+import Modal from "../ui/Modal"
+import SearchModal from "./SearchModal"
 // import { FaSearch } from "@react-icons/all-files/fa/FaSearch"
 import { IoMdSearch } from "@react-icons/all-files/io/IoMdSearch"
 
@@ -60,9 +62,14 @@ const Wrapper = styled.div`
 `
 
 const Search = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const openModal = () => setIsOpen(true)
+  const closeModal = () => setIsOpen(false)
+
   return (
     <Wrapper>
-      <button className="global-search-button">
+      <button className="global-search-button" onClick={openModal}>
         <IoMdSearch />
         <div className="search-text">
           <span className="search-label">搜索</span>
@@ -72,6 +79,10 @@ const Search = () => {
           </span>
         </div>
       </button>
+
+      <Modal isOpen={isOpen} onClose={closeModal}>
+        <SearchModal />
+      </Modal>
     </Wrapper>
   )
 }

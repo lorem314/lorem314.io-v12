@@ -12,46 +12,57 @@ import Footer from "./Footer"
 import Drawer from "../ui/Drawer"
 import useDrawer from "../hooks/useDrawer"
 import DrawerHead from "../styled/DrawerHead"
-import SplitView from "../ui/SplitView"
 
 import { useGlobalContext } from "../GlobalContext"
 import GlobalStyle, { bp, size } from "../styled/GlobalStyle"
 
 const Wrapper = styled.div`
-  width: 100%;
-  height: 100%;
+  > .sidebar-container {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    bottom: 0;
+    width: ${({ $layoutSidebarWidth }) => `${$layoutSidebarWidth}px`};
+  }
 
-  main {
+  > main {
     padding: 0 10px;
+
     position: absolute;
     top: 50px;
     right: 0;
     bottom: 0;
-    left: 0;
+    left: ${({
+      $isLayoutSidebarAlwaysCollapsed,
+      $isLayoutSidebarCollapsed,
+      $layoutSidebarWidth,
+    }) =>
+      $isLayoutSidebarAlwaysCollapsed || $isLayoutSidebarCollapsed
+        ? "0"
+        : `${$layoutSidebarWidth}px`};
+
     color: var(--content-color-1);
     background-color: var(--bg-0);
     overflow: auto;
     scroll-behavior: smooth;
-  }
 
-  > .split-view {
-    position: absolute;
-    top: 50px;
-    left: 0;
-    right: 0;
-    bottom: 0;
-
-    > .left > .sidebar-container {
+    > .page-container {
       position: absolute;
       top: 0;
       left: 0;
       bottom: 0;
-      width: 100%;
-    }
+      right: 0;
+      /* overflow: auto; */
+      scroll-behavior: smooth;
 
-    > .right > main {
       padding: 0 10px;
-      top: 0;
+      background-color: var(--bg-0);
+
+      &:fullscreen {
+        > * {
+          max-width: 100%;
+        }
+      }
     }
   }
 `
@@ -80,10 +91,17 @@ const Layout = ({ children, location }) => {
   const [rightDrawerBreakPoint, RightDrawerIcon] =
     getRightDrawerBreakPointAndIcon(location)
 
-  const matched = Object.keys(isRightDrawersAlwaysCollapsed).find((regex) =>
-    location?.pathname.match(`^${regex}$`)
+  const matched = useMemo(
+    () =>
+      Object.keys(isRightDrawersAlwaysCollapsed).find((regex) =>
+        location.pathname.match(`^${regex}$`)
+      ),
+    [isRightDrawersAlwaysCollapsed, location.pathname]
   )
-  const isRightDrawerAlwaysCollapsed = isRightDrawersAlwaysCollapsed[matched]
+  const isRightDrawerAlwaysCollapsed = useMemo(
+    () => isRightDrawersAlwaysCollapsed[matched],
+    [matched]
+  )
 
   const {
     isCollapsed: isRightDrawerCollapsed,
@@ -97,16 +115,11 @@ const Layout = ({ children, location }) => {
 
   const cachedSidebar = useMemo(() => <Sidebar />, [])
 
-  const cachedHandleFinished = useCallback((width) => {
-    // console.log("cachedHandleFinished width", width)
-    setLayoutSidebarWidth(width)
-  }, [])
-
   return typeof window === "undefined" ? null : (
     <Wrapper
       $isLayoutSidebarAlwaysCollapsed={isLayoutSidebarAlwaysCollapsed}
       $isLayoutSidebarCollapsed={isLayoutSidebarCollapsed}
-      $layoutSidebarWidth={layoutSidebarWidth}
+      $layoutSidebarWidth={320}
     >
       <GlobalStyle />
 
@@ -121,54 +134,33 @@ const Layout = ({ children, location }) => {
       />
 
       {isLayoutSidebarAlwaysCollapsed || isLayoutSidebarCollapsed ? (
-        <>
-          <Drawer
-            size={layoutSidebarWidth}
-            isOpen={isLayoutSidebarOpen}
-            position="left"
-            onClose={handleLayoutSidebarClose}
-          >
-            <DrawerHead position="left">
-              <Logo />
-            </DrawerHead>
-            {cachedSidebar}
-          </Drawer>
-          <main>
-            {/* <div id="page-container" className="page-container"> */}
-            {React.cloneElement(children, {
-              isRightDrawerAlwaysCollapsed,
-              isRightDrawerCollapsed,
-              isRightDrawerOpen,
-              openRightDrawer,
-              closeRightDrawer,
-            })}
-            <Footer />
-            {/* </div> */}
-          </main>
-        </>
-      ) : (
-        <SplitView
-          adjust="left"
-          initialWidth={layoutSidebarWidth}
-          maxWidth={500}
-          minWidth={240}
-          onFinished={cachedHandleFinished}
+        <Drawer
+          size={layoutSidebarWidth}
+          isOpen={isLayoutSidebarOpen}
+          position="left"
+          onClose={handleLayoutSidebarClose}
         >
-          <div className="sidebar-container">{cachedSidebar}</div>
-          <main>
-            <div id="page-container" className="page-container">
-              {React.cloneElement(children, {
-                isRightDrawerAlwaysCollapsed,
-                isRightDrawerCollapsed,
-                isRightDrawerOpen,
-                openRightDrawer,
-                closeRightDrawer,
-              })}
-              <Footer />
-            </div>
-          </main>
-        </SplitView>
+          <DrawerHead position="left">
+            <Logo />
+          </DrawerHead>
+          {cachedSidebar}
+        </Drawer>
+      ) : (
+        <div className="sidebar-container">{cachedSidebar}</div>
       )}
+
+      <main>
+        <div id="page-container" className="page-container">
+          {React.cloneElement(children, {
+            isRightDrawerAlwaysCollapsed,
+            isRightDrawerCollapsed,
+            isRightDrawerOpen,
+            openRightDrawer,
+            closeRightDrawer,
+          })}
+          <Footer />
+        </div>
+      </main>
 
       {/*  */}
     </Wrapper>
@@ -181,13 +173,13 @@ const getRightDrawerBreakPointAndIcon = (location) => {
   if (!location) return [0, null]
 
   const pathname = location.pathname
-  console.log("pathanme ", pathname)
+  // console.log("pathanme ", pathname)
 
   if (new RegExp("^/blogs$").test(pathname)) {
     // return { breakPoint: bp.collapsePageBlogRightDrawer, Icon: FaTags }
     return [bp.collapsePageBlogsRightDrawer, AiFillTags]
   } else if (new RegExp("^/blogs/.*?").test(pathname)) {
-    console.log("/blogs/[title]")
+    // console.log("/blogs/[title]")
     return [bp.collapseArticleRightDrawer, VscListTree]
   } else {
     return [0, null]

@@ -15,7 +15,7 @@ const Wrapper = styled.a`
 
 const ExternalLink = ({ href = "", children }) => {
   return (
-    <Wrapper href={href} target="_blank">
+    <Wrapper href={href} target="_blank" rel="noopener noreferrer">
       {children}
       <FaExternalLinkAlt />
     </Wrapper>

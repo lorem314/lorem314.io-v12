@@ -68,7 +68,7 @@ const Wrapper = styled.div`
   }
 `
 
-const Sidebar = ({ isInDrawer = false, onCloseDrawer }) => {
+const Sidebar = () => {
   return (
     <Wrapper>
       <nav>

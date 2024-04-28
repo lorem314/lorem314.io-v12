@@ -78,7 +78,7 @@ const PageBlogs = ({
           event.stopPropagation()
           return prevSelectedTags.filter((selectedTag) => selectedTag !== tag)
         } else {
-          console.log("not hasSelected", event)
+          // console.log("not hasSelected", event)
           if (event.shiftKey) {
             console.log("shiftKey")
             return [...prevSelectedTags, tag]

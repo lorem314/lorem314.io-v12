@@ -34,8 +34,6 @@ const PostItem = ({ post }) => {
           <Tags tags={post.frontmatter.tags} />
           <div className="post-created-at">
             <span>发布于 {formateDate(post.frontmatter.createdAt)}</span>
-            <span> · </span>
-            <span>约 {post.fields.statistic.totalWords} 字</span>
           </div>
         </header>
       </article>
