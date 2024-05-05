@@ -1,113 +1,142 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react"
 import styled from "styled-components"
 
 const Wrapper = styled.div.attrs({ className: "split-view" })`
+  width: 100%;
+  /* height: fit-content; */
+  background-color: rgba(255, 0, 0, 0.1);
   display: flex;
 
-  > .left {
-    flex-grow: ${({ $adjust }) => ($adjust === "left" ? "0" : "1")};
-    flex-shrink: 1;
-    position: relative;
+  > .first {
+    background-color: rgba(39, 39, 42, 0.1);
+    min-width: ${({ $minWidth }) => $minWidth}px;
+    max-width: 900px;
+    overflow: hidden;
   }
 
-  > .spliter {
-    flex: 0 0 4px;
-    cursor: ew-resize;
-    background-color: rgba(0, 0, 0, 0.25);
+  > .resizer {
+    flex: 0 0 16px;
+    position: relative;
+    cursor: col-resize;
 
-    &:hover {
-      background-color: rgba(0, 0, 0, 0.5);
+    > .bar {
+      width: 4px;
+      height: 25%;
+      border-radius: 0.5rem;
+      background-color: red;
+
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
   }
 
-  > .right {
-    flex-grow: ${({ $adjust }) => ($adjust === "right" ? "0" : "1")};
-    flex-shrink: 1;
-    position: relative;
+  > .second {
+    background-color: rgba(39, 39, 42, 0.2);
+    flex: 1 1 0;
+    overflow: hidden;
   }
 `
 
 const SplitView = ({
-  adjust = "right",
-  initialWidth = 300,
-  maxWidth = 360,
+  direction = "horizontal",
   minWidth = 100,
-  children = null,
-  onFinished = () => {},
+  initialWidth = 200,
+  maxWidth = 300,
+  use = "first",
 }) => {
   const [width, setWidth] = useState(initialWidth)
+  const refResizer = useRef(null)
   const refRoot = useRef(null)
-  const refSpliter = useRef(null)
+
+  useLayoutEffect(() => {
+    const root = refRoot.current
+    const first = root.querySelector(".first")
+    if (!first || !root) return
+    first.style.width = `${initialWidth}px`
+    first.style.minWidth = `${minWidth}px`
+  }, [])
 
   useEffect(() => {
+    const resizer = refResizer.current
     const root = refRoot.current
-    const spliter = refSpliter.current
+    let xOffsetResizer = null
     let isMouseDown = false
-    let spliterMouseDownOffsetX = 0
-    let currentWidth = 0
+    const first = root.querySelector(".first")
+    // console.log("first", first)
 
     const handleMouseDown = (event) => {
+      if (!isMouseDown) {
+        const resizerClientRect = resizer.getBoundingClientRect()
+        xOffsetResizer = event.clientX - resizerClientRect.left
+        document.body.style.userSelect = "none"
+        window.addEventListener("mousemove", handleMouseMove)
+      }
       isMouseDown = true
-      // console.log("[SplitView] mouse DOWN")
-      document.body.style.userSelect = "none"
-      spliterMouseDownOffsetX = event.offsetX
-      window.addEventListener("mousemove", handleMouseMove)
     }
-
-    const handleMouseUp = (event) => {
-      if (isMouseDown) onFinished(currentWidth)
+    const handleMouseUp = () => {
+      if (isMouseDown) {
+        console.log("mouse up")
+        document.body.style.userSelect = "auto"
+        window.removeEventListener("mousemove", handleMouseMove)
+      }
       isMouseDown = false
-      // console.log("[SplitView] mouse UP")
-      document.body.style.userSelect = "initial"
-      window.removeEventListener("mousemove", handleMouseMove)
     }
-
     const handleMouseMove = (event) => {
-      // console.log("mouse move")
-      const rootRect = root.getBoundingClientRect()
-
-      const nextWidth =
-        adjust === "left"
-          ? event.clientX - rootRect.left - spliterMouseDownOffsetX
-          : rootRect.right - event.clientX - (4 - spliterMouseDownOffsetX)
-      currentWidth = nextWidth
-      // console.log("nextWidth", nextWidth)
-
-      if (nextWidth > maxWidth) {
-        currentWidth = maxWidth
-        setWidth(maxWidth)
-        return
-      }
-      if (nextWidth < minWidth) {
-        currentWidth = minWidth
-        setWidth(minWidth)
-        return
-      }
-      setWidth(nextWidth)
+      const rootClientRect = root.getBoundingClientRect()
+      // const resizerClientRect = root.getBoundingClientRect()
+      const width = event.clientX - rootClientRect.left - xOffsetResizer
+      // console.log("width", width)
+      first.style.width = `${width}px`
+      // setWidth(width)
     }
 
-    spliter.addEventListener("mousedown", handleMouseDown)
+    resizer.addEventListener("mousedown", handleMouseDown)
     window.addEventListener("mouseup", handleMouseUp)
 
     return () => {
-      spliter.removeEventListener("mousedown", handleMouseDown)
+      resizer.removeEventListener("mousedown", handleMouseDown)
       window.removeEventListener("mouseup", handleMouseUp)
     }
-  }, [adjust, minWidth, maxWidth])
-
-  const style = { flexBasis: `${width}px` }
-  console.log("width", width)
+  }, [])
 
   return (
-    <Wrapper ref={refRoot} $adjust={adjust}>
-      <div className="left" style={adjust === "left" ? style : null}>
-        {children[0]}
+    <Wrapper ref={refRoot}>
+      <div className="first">
+        <div style={{ width: "100%", height: "100%", overflow: "auto" }}>
+          <ul>
+            <li>resizeable split view</li>
+            <li>
+              Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam
+              hic eum a animi corrupti!
+            </li>
+            <li>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit.
+              Accusantium nam molestias ut iste quos atque omnis reiciendis
+              earum ipsam quisquam?
+            </li>
+          </ul>
+        </div>
       </div>
 
-      <div className="spliter" ref={refSpliter} />
+      <div className="resizer" ref={refResizer}>
+        <div className="bar" />
+      </div>
 
-      <div className="right" style={adjust === "right" ? style : null}>
-        {children[1]}
+      <div className="second">
+        <ul>
+          <li>resizeable split view</li>
+          <li>
+            Lorem ipsum dolor, sit amet consectetur adipisicing elit. Ullam hic
+            eum a animi corrupti!
+          </li>
+          <li>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Accusantium
+            nam molestias ut iste quos atque omnis reiciendis earum ipsam
+            quisquam?
+          </li>
+        </ul>
       </div>
     </Wrapper>
   )
