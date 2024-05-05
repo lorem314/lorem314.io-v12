@@ -18,9 +18,6 @@
     "#root/*": {
       "default": "./*"
     },
-    "#src/*": {
-      "default": "./src/*"
-    },
     "#html/*": {
       "default": "./src/html/*"
     },

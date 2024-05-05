@@ -8,9 +8,12 @@ const Blogs = ({ data, location }) => {
   const allBlogPost = data?.allBlogPost?.nodes || []
 
   return (
-    <Layout location={location}>
-      <PageBlogs allBlogPost={allBlogPost} />
-    </Layout>
+    <>
+      <title>博客 | Lorem314's Blog</title>
+      <Layout location={location}>
+        <PageBlogs allBlogPost={allBlogPost} />
+      </Layout>
+    </>
   )
 }
 

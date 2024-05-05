@@ -173,6 +173,11 @@ const GlobalStyle = styled.createGlobalStyle`
     align-items: flex-end;
 
     font-size: 1em;
+
+    &:focus,
+    &:focus-visible {
+      outline: 5px auto -webkit-focus-ring-color;
+    }
   }
   input {
     font-size: 1rem;
@@ -267,6 +272,14 @@ const GlobalStyle = styled.createGlobalStyle`
     list-style-type: none;
     margin: 0;
     padding: 0;
+  }
+  ul,
+  ol {
+    &.none-style {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
   }
 `
 

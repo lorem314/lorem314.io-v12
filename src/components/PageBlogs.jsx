@@ -19,7 +19,7 @@ const Wrapper = styled.div`
 
   display: grid;
   gap: 10px;
-  grid-template-columns: 5fr minmax(320px, 3fr);
+  grid-template-columns: 5fr 3fr;
 
   > .form-container {
     grid-column-start: 1;

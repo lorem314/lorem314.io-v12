@@ -45,7 +45,7 @@ const getMetaData = (body) => {
   return meta
 }
 
-export default getMetaData
+module.exports = { getMetaData }
 
 const getItems = (lines) => {
   const items = []

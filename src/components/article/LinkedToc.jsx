@@ -3,6 +3,9 @@ import React, {
   forwardRef,
   useImperativeHandle,
   cloneElement,
+  useRef,
+  createRef,
+  useEffect,
 } from "react"
 import styled from "styled-components"
 
@@ -37,7 +40,7 @@ const Wrapper = styled.div.attrs({
     > li {
       line-height: 1.5;
       position: relative;
-      margin-left: calc(0.5em - 1px);
+      margin-left: calc(0.75em - 1px);
       border-left: 1px dashed grey;
       padding-left: 0.75em;
 
@@ -48,7 +51,6 @@ const Wrapper = styled.div.attrs({
         content: " ";
         width: 0.5em;
         height: 0.75em;
-        /* border-left: 1px solid red; */
         border-bottom: 1px dashed grey;
       }
     }
@@ -76,6 +78,32 @@ const Wrapper = styled.div.attrs({
       }
     }
   }
+
+  a {
+    opacity: 0.875;
+    &.is-visible {
+      opacity: 1;
+    }
+    &.is-active {
+      font-weight: bold;
+    }
+  }
+
+  button {
+    flex: 0 0 auto;
+    --svg-icon-size: 1.125rem;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    color: gray;
+    background-color: transparent;
+    align-items: center;
+
+    &:hover {
+      color: black;
+    }
+  }
 `
 
 const DetailsHead = styled.div`
@@ -91,34 +119,81 @@ const DetailsHead = styled.div`
     height: calc(100% - 24px);
     position: absolute;
     top: 24px;
-    left: -17px;
+    left: calc(-0.75em - 1px);
     border-left: 1px dashed gray;
   }
 
   > .title-container {
     flex-grow: 1;
   }
-
-  > button {
-    width: 24px;
-    height: 24px;
-    padding: 0;
-    border: none;
-    /* border: 1px solid red; */
-    background-color: transparent;
-  }
 `
 
 const LinkedToc = ({ tableOfContents }) => {
+  const refDetails = useRef(null)
+  const refItems = useRef(null)
+
+  const openAll = (event) => {
+    event?.stopPropagation()
+    refDetails.current?.open()
+    refItems.current?.openAll()
+  }
+  const closeAll = (event) => {
+    event?.stopPropagation()
+    refDetails.current?.close()
+    refItems.current?.closeAll()
+  }
+
+  useEffect(() => {
+    const linkedToc = document.getElementById("linked-toc")
+    const links = [...linkedToc.querySelectorAll("a")]
+    const headings = links.map((link) => {
+      const title = link.getAttribute("data-title")
+      return document.getElementById(title)
+    })
+    const observer = new IntersectionObserver(
+      (entries, observer) => {
+        entries.forEach((entry) => {
+          const target = entry.target
+          // target is heading element that is showing in viewport
+          const headingId = target.getAttribute("id")
+          const targetLink = links.find(
+            (link) => link.getAttribute("data-title") === headingId
+          )
+          if (entry.isIntersecting && entry.intersectionRatio >= 1) {
+            targetLink.classList.add("is-visible")
+          } else {
+            targetLink.classList.remove("is-visible")
+          }
+          const firstVisibleLink = linkedToc.querySelector(".is-visible")
+          links.forEach((link) => link.classList.remove("is-active"))
+          if (firstVisibleLink) {
+            firstVisibleLink.classList.add("is-active")
+          }
+        })
+      },
+      { threshold: 1 }
+    )
+    headings.forEach((heading) => heading && observer.observe(heading))
+  }, [tableOfContents])
+
   const parsedToc = JSON.parse(tableOfContents)
-  console.log({ parsedToc })
+  // console.log({ parsedToc })
+
   return (
     <Wrapper>
-      <Details>
+      <Details ref={refDetails}>
         <DetailsHead>
-          <h1 className="toc-title">目录</h1>
+          <h1 style={{ flex: "1 1 auto" }} className="toc-title">
+            目录
+          </h1>
+          <button aria-label="Collapse All" onClick={closeAll}>
+            <VscCollapseAll />
+          </button>
+          <button aria-label="Expand All" onClick={openAll}>
+            <VscExpandAll />
+          </button>
         </DetailsHead>
-        <Items items={parsedToc.items} />
+        <Items ref={refItems} items={parsedToc.items} />
       </Details>
     </Wrapper>
   )
@@ -126,48 +201,82 @@ const LinkedToc = ({ tableOfContents }) => {
 
 export default LinkedToc
 
-const Items = ({ items, level = 0 }) => {
+const Items = forwardRef(({ items, level = 0 }, ref) => {
+  const refs = useRef(items.map(() => createRef()))
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      openAll: () => refs.current.forEach((ref) => ref.current.openAll()),
+      closeAll: () => refs.current.forEach((ref) => ref.current.closeAll()),
+    }),
+    []
+  )
+
   if (items?.length === 0) return null
   return (
     <ul>
       {items.map((item, index) => {
         return (
           <li key={index}>
-            <Item item={item} level={level} />
+            <Item ref={refs.current[index]} item={item} level={level} />
           </li>
         )
       })}
     </ul>
   )
-}
-const Item = ({ item, level }) => {
+})
+
+const Item = forwardRef(({ item, level }, ref) => {
   const hashtagLink = encodeURIComponent(item.title)
+
+  const refDetails = useRef(null)
+  const refItems = useRef(null)
+
+  const openAll = (event) => {
+    event?.stopPropagation()
+    refDetails.current?.open()
+    refItems.current?.openAll()
+  }
+  const closeAll = (event) => {
+    event?.stopPropagation()
+    refDetails.current?.close()
+    refItems.current?.closeAll()
+  }
+
+  useImperativeHandle(ref, () => ({ closeAll, openAll }), [])
+
   if (item?.items.length === 0) {
-    return <a href={`#${hashtagLink}`}>{item.title}</a>
+    return (
+      <a href={`#${hashtagLink}`} data-title={item.title}>
+        {item.title}
+      </a>
+    )
   }
   return (
-    <Details isOpen={true}>
+    <Details isOpen={true} ref={refDetails}>
       <DetailsHead>
         <div className="title-container">
           <a
             className="toc-title"
             href={`#${hashtagLink}`}
+            data-title={item.title}
             onClick={justStopPropagation}
           >
             {item.title}
           </a>
         </div>
-        <button aria-label="Collapse All">
+        <button aria-label="Collapse All" onClick={closeAll}>
           <VscCollapseAll />
         </button>
-        <button aria-label="Expand All">
+        <button aria-label="Expand All" onClick={openAll}>
           <VscExpandAll />
         </button>
       </DetailsHead>
-      <Items items={item.items} level={level + 1} />
+      <Items ref={refItems} items={item.items} level={level + 1} />
     </Details>
   )
-}
+})
 
 const DetailsWrapper = styled.details`
   > summary {
@@ -183,32 +292,10 @@ const DetailsWrapper = styled.details`
 
     &:hover {
       background-color: rgba(0, 0, 0, 0.1);
-
-      > button {
-        color: black;
-      }
-    }
-
-    > button {
-      flex: 0 0 auto;
-      /* margin-left: -2px; */
-      --svg-icon-size: 1.125rem;
-      width: 24px;
-      height: 24px;
-      padding: 0;
-      border: none;
-      background-color: transparent;
-      /* background-color: rgba(0, 0, 0, 0.1); */
-      color: gray;
-      align-items: center;
-
-      &:hover {
-        color: black;
-      }
     }
   }
 `
-const Details = (props) => {
+const Details = forwardRef((props, ref) => {
   const { children } = props
   const [isOpen, setIsOpen] = useState(true)
 
@@ -221,6 +308,8 @@ const Details = (props) => {
     setIsOpen(false)
   }
 
+  useImperativeHandle(ref, () => ({ open, close }), [])
+
   return (
     <DetailsWrapper open={isOpen}>
       <summary onClick={isOpen ? close : open}>
@@ -232,4 +321,4 @@ const Details = (props) => {
       {children[1]}
     </DetailsWrapper>
   )
-}
+})

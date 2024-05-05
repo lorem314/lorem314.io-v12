@@ -5,9 +5,12 @@ import PageSetting from "../components/PageSetting"
 
 const Setting = ({ location }) => {
   return (
-    <Layout location={location}>
-      <PageSetting />
-    </Layout>
+    <>
+      <title>设置 | Lorem314's Blog</title>
+      <Layout location={location}>
+        <PageSetting />
+      </Layout>
+    </>
   )
 }
 

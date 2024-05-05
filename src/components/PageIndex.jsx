@@ -23,22 +23,9 @@ const PageIndex = () => {
     <Wrapper>
       <h2 className="greeting">欢迎来到我的博客</h2>
 
-      <NumberInput />
-
-      <details>
-        <summary>标题</summary>
-        <div>
-          <p>
-            岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏
-            岑氏岑氏 岑氏岑氏岑氏 岑氏 岑氏 岑氏 岑氏
-            岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏岑氏 岑氏岑氏 岑氏岑氏 岑氏 岑氏
-            岑氏 岑氏 岑氏岑氏岑氏 岑氏 岑氏岑氏岑氏 岑氏岑氏 岑氏 岑氏 岑氏
-            岑氏 岑氏岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏 岑氏
-            岑氏岑氏 岑氏 岑氏岑氏岑氏岑氏岑氏岑氏 岑氏 岑氏 岑氏 岑氏岑氏 岑氏
-            岑氏 岑氏 岑氏岑氏 岑氏 岑氏 岑氏 岑氏 岑氏
-          </p>
-        </div>
-      </details>
+      {/* <div style={{ maxWidth: "50%" }}>
+        <NumberInput />
+      </div> */}
 
       <p>
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia

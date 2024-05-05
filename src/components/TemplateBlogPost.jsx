@@ -1,6 +1,5 @@
 import React from "react"
 import styled from "styled-components"
-import { MDXProvider } from "@mdx-js/react"
 
 import Actions from "./article/Actions"
 import Body from "./article/Body"
@@ -8,8 +7,9 @@ import Head from "./blogs/Head"
 import LinkedToc from "./article/LinkedToc"
 
 import Drawer from "../ui/Drawer"
+import DrawerHead from "../styled/DrawerHead"
 
-import getMetaData from "../utils/meta"
+// import getMetaData from "../utils/meta"
 import { bp } from "../styled/GlobalStyle"
 
 const Wrapper = styled.div`
@@ -20,8 +20,13 @@ const Wrapper = styled.div`
   grid-template-columns: 2rem minmax(0, auto) minmax(0, 20rem);
   gap: 10px;
 
-  > .actions {
-    flex: 0 0 2rem;
+  > .body-container {
+    grid-column-start: 2;
+    grid-column-end: ${({
+      $isRightDrawerAlwaysCollapsed,
+      $isRightDrawerCollapsed,
+    }) =>
+      $isRightDrawerAlwaysCollapsed || $isRightDrawerCollapsed ? "4" : "3"};
   }
 
   > .toc-container {
@@ -41,6 +46,7 @@ const Wrapper = styled.div`
 `
 
 const TemplateBlogPost = ({
+  location,
   blogPost,
   body,
   isRightDrawerAlwaysCollapsed,
@@ -55,10 +61,13 @@ const TemplateBlogPost = ({
   // console.log("[TemplateBlogPost] re-render")
 
   return (
-    <Wrapper>
-      <Actions />
+    <Wrapper
+      $isRightDrawerAlwaysCollapsed={isRightDrawerAlwaysCollapsed}
+      $isRightDrawerCollapsed={isRightDrawerCollapsed}
+    >
+      <Actions location={location} />
 
-      <article>
+      <article className="body-container">
         <Head frontmatter={blogPost.frontmatter} />
         <Body body={body} />
       </article>
@@ -70,6 +79,9 @@ const TemplateBlogPost = ({
           position="right"
           onClose={closeRightDrawer}
         >
+          <DrawerHead position="right">
+            <h1 style={{ fontSize: "1rem", margin: "0" }}>目录</h1>
+          </DrawerHead>
           <LinkedToc tableOfContents={blogPost.fields.tableOfContents} />
         </Drawer>
       ) : (

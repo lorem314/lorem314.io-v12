@@ -14,3 +14,12 @@ export const replaceHydrateFunction = () => {
     root.render(element)
   }
 }
+
+// export const onRouteUpdate = ({ location }) => {
+//   if (location?.hash) {
+//     const decoded = decodeURIComponent(location.hash.slice(1))
+//     const section = document.querySelector(`#${decoded}`)
+//     window.scrollTo({ top: section.offsetTop, behavior: "smooth" })
+//     return true
+//   }
+// }

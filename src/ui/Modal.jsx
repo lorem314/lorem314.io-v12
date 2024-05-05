@@ -3,6 +3,7 @@ import { createPortal } from "react-dom"
 import styled from "styled-components"
 
 import { justStopPropagation } from "../utils/event"
+import { getFocusableElementsOf } from "../utils/dom"
 
 const Modal = ({ children, isOpen, onClose }) => {
   return isOpen ? <Portal onClose={onClose}>{children}</Portal> : null
@@ -35,7 +36,17 @@ const Portal = ({ onClose = () => {}, children }) => {
   const [styles, setStyles] = useState({ opacity: 0, transform: "scale(0)" })
 
   useEffect(() => {
+    const focusableElements = getFocusableElementsOf(ref.current)
+
     setStyles({ opacity: 1, transform: "scale(1)" })
+
+    Promise.resolve()
+      .then(() => {
+        return new Promise((resolve) => setTimeout(() => resolve(), 150))
+      })
+      .then(() => {
+        if (focusableElements.length !== 0) focusableElements[0].focus()
+      })
   }, [])
 
   const handleCloseModal = () => {
@@ -54,6 +65,7 @@ const Portal = ({ onClose = () => {}, children }) => {
   return createPortal(
     <Backdrop style={{ opacity: styles.opacity }} onClick={handleCloseModal}>
       <div
+        ref={ref}
         className="modal-content-container"
         style={{ transform }}
         onClick={justStopPropagation}

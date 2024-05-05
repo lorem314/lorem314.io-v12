@@ -9,13 +9,16 @@ const BlogPost = ({ data, location, children }) => {
   const { title } = blogPost.frontmatter
 
   return (
-    <Layout location={location}>
-      <TemplateBlogPost
-        blogPost={blogPost}
-        body={children}
-        location={location}
-      />
-    </Layout>
+    <>
+      <title>{title} | 书籍 | Lorem314's Blog</title>
+      <Layout location={location}>
+        <TemplateBlogPost
+          location={location}
+          blogPost={blogPost}
+          body={children}
+        />
+      </Layout>
+    </>
   )
 }
 

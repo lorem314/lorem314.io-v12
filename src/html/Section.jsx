@@ -36,7 +36,7 @@ const Section = (props) => {
   return (
     <Wrapper>
       {
-        <H className="heading" id={`${hashtagLink}`}>
+        <H className="heading" id={title}>
           <a className="hash-link" href={`#${hashtagLink}`}>
             {title}
           </a>

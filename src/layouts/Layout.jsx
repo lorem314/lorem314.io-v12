@@ -52,7 +52,7 @@ const Wrapper = styled.div`
       left: 0;
       bottom: 0;
       right: 0;
-      /* overflow: auto; */
+      overflow: auto;
       scroll-behavior: smooth;
 
       padding: 0 10px;
@@ -173,13 +173,15 @@ const getRightDrawerBreakPointAndIcon = (location) => {
   if (!location) return [0, null]
 
   const pathname = location.pathname
-  // console.log("pathanme ", pathname)
 
   if (new RegExp("^/blogs$").test(pathname)) {
     // return { breakPoint: bp.collapsePageBlogRightDrawer, Icon: FaTags }
     return [bp.collapsePageBlogsRightDrawer, AiFillTags]
   } else if (new RegExp("^/blogs/.*?").test(pathname)) {
     // console.log("/blogs/[title]")
+    return [bp.collapseArticleRightDrawer, VscListTree]
+  } else if (new RegExp("^/books/.*?/.*?").test(pathname)) {
+    // console.log("/books/[title]/[chapter]")
     return [bp.collapseArticleRightDrawer, VscListTree]
   } else {
     return [0, null]
