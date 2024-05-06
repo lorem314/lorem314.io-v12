@@ -120,7 +120,7 @@ exports.createPages = async ({ graphql, actions }) => {
 
 const getMetaData = (body) => {
   const meta = { count: { word: 0, image: 0, code: 0 }, tableOfContents: {} }
-  const lines = body.split("\r\n")
+  const lines = body.split("\n")
   console.log(
     "[getMetaData] inspect body line by line, lines.length",
     lines.length
