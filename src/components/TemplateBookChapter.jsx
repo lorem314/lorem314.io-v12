@@ -55,6 +55,7 @@ const TemplateBookChapter = ({
   // openRightDrawer,
   closeRightDrawer,
 }) => {
+  console.log("[TemplateBookChapter] bookChapter", bookChapter)
   return (
     <Wrapper
       $isRightDrawerAlwaysCollapsed={isRightDrawerAlwaysCollapsed}

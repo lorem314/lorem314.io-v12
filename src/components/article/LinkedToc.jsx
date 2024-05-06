@@ -129,6 +129,7 @@ const DetailsHead = styled.div`
 `
 
 const LinkedToc = ({ tableOfContents }) => {
+  console.log("[LinkedToc] tableOfContents", tableOfContents)
   const refDetails = useRef(null)
   const refItems = useRef(null)
 
